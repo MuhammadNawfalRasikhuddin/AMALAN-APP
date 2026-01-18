@@ -1,11 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Optional
+import feedparser # Library untuk ambil berita real-time
 
 app = FastAPI()
 
-# Izinkan Frontend (HTML kamu) mengakses API ini
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,62 +11,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- DATA MODELS ---
-class News(BaseModel):
-    id: int
-    title: str
-    category: str
-    summary: str
-    content: str
-    image: str
-
-class Reply(BaseModel):
-    user: str
-    text: str
-
-class Post(BaseModel):
-    id: int
-    author: str
-    content: str
-    replies: List[Reply] = []
-
-# --- DATABASE SEDERHANA (In-Memory) ---
-db_news = [
-    {
-        "id": 1, 
-        "title": "Kemenangan Diplomatik PBB 2026", 
-        "category": "Kabar Gembira", 
-        "summary": "Dukungan dunia meningkat.",
-        "content": "Laporan dari markas besar PBB menunjukkan hasil positif...",
-        "image": "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800"
-    }
-]
-
-db_forum = []
-
-# --- ENDPOINTS ---
-
 @app.get("/")
 def home():
-    return {"status": "AMANAH API is Running", "version": "1.0"}
+    return {"status": "API Amanah Real-Time Active"}
 
-@app.get("/news", response_model=List[News])
-def get_news():
-    return db_news
+@app.get("/news")
+def get_real_news():
+    # Mengambil RSS Feed berita Muslim (Contoh: Republika Khazanah)
+    url = "https://www.republika.co.id/rss/khazanah/"
+    feed = feedparser.parse(url)
+    
+    real_news = []
+    for i, entry in enumerate(feed.entries):
+        # Mengambil link gambar dari entry jika ada, jika tidak pakai placeholder
+        image_url = "https://picsum.photos/800/400" 
+        if 'links' in entry:
+            for link in entry.links:
+                if 'image' in link.get('type', ''):
+                    image_url = link.get('href')
 
-@app.post("/forum")
-def create_post(post: Post):
-    db_forum.append(post.dict())
-    return {"message": "Post success", "data": post}
+        real_news.append({
+            "id": i + 1,
+            "title": entry.title,
+            "category": "Kabar Muslim",
+            "summary": entry.summary[:100] + "...", # Potong ringkasan agar rapi
+            "content": entry.summary,
+            "image": image_url,
+            "link": entry.link
+        })
+    
+    return real_news
 
-@app.get("/forum")
-def get_forum():
-    return db_forum
-
-@app.post("/forum/{post_id}/reply")
-def add_reply(post_id: int, reply: Reply):
-    for post in db_forum:
-        if post["id"] == post_id:
-            post["replies"].append(reply.dict())
-            return {"message": "Reply added"}
-    return {"error": "Post not found"}
+# Jalankan: uvicorn main:app --reload

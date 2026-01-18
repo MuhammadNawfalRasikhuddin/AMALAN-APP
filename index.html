@@ -1,348 +1,742 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AMANAH - Ultimate & News System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --primary: #059669; --bg: #f8fafc; --text: #111827; --sub: #6b7280;
-            --border: #e2e8f0; --accent: #10b981; --verify: #1d9bf0; --white: #ffffff;
+      :root {
+        --primary: #059669;
+        --bg: #f8fafc;
+        --text: #111827;
+        --sub: #6b7280;
+        --border: #e2e8f0;
+        --accent: #10b981;
+        --verify: #1d9bf0;
+        --white: #ffffff;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+      }
+
+      /* HEADER & NAVIGATION */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(15px);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        font-weight: 800;
+        font-size: 1.4rem;
+        color: var(--primary);
+        cursor: pointer;
+      }
+      .nav-tools {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .search-input {
+        padding: 8px 15px;
+        border-radius: 99px;
+        border: 1px solid var(--border);
+        outline: none;
+        width: 150px;
+        transition: 0.3s;
+      }
+      .search-input:focus {
+        width: 200px;
+        border-color: var(--primary);
+      }
+
+      /* BUTTONS */
+      .btn {
+        border: none;
+        padding: 10px 18px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 0.85rem;
+      }
+      .btn-p {
+        background: var(--primary);
+        color: white;
+      }
+      .btn-lang {
+        background: #f1f5f9;
+        border: 1px solid var(--border);
+      }
+
+      /* LAYOUT */
+      .container {
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 30px 20px;
+      }
+      .page {
+        display: none;
+        animation: fadeIn 0.4s ease;
+      }
+      .page.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); }
-
-        /* HEADER & NAVIGATION */
-        header {
-            position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(15px); border-bottom: 1px solid var(--border);
-            padding: 12px 5%; display: flex; justify-content: space-between; align-items: center;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        .logo { font-weight: 800; font-size: 1.4rem; color: var(--primary); cursor: pointer; }
-        .nav-tools { display: flex; gap: 10px; align-items: center; }
-        .search-input { padding: 8px 15px; border-radius: 99px; border: 1px solid var(--border); outline: none; width: 150px; transition: 0.3s; }
-        .search-input:focus { width: 200px; border-color: var(--primary); }
+      }
 
-        /* BUTTONS */
-        .btn { border: none; padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
-        .btn-p { background: var(--primary); color: white; }
-        .btn-lang { background: #f1f5f9; border: 1px solid var(--border); }
+      /* CARDS & GRID */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-top: 25px;
+      }
+      .m-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        padding: 25px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .m-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
 
-        /* LAYOUT */
-        .container { max-width: 850px; margin: 0 auto; padding: 30px 20px; }
-        .page { display: none; animation: fadeIn 0.4s ease; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      /* NEWS SECTION */
+      .news-highlight {
+        margin-top: 40px;
+      }
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .news-card {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .news-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary);
+      }
+      .news-card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+      }
+      .news-info {
+        padding: 15px;
+      }
+      .news-tag {
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: var(--primary);
+        text-transform: uppercase;
+      }
+      .news-title {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 5px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
 
-        /* CARDS & GRID */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 25px; }
-        .m-card { background: var(--white); border: 1px solid var(--border); padding: 25px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
-        .m-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+      /* LOAD MORE BUTTON */
+      .load-more-container {
+        text-align: center;
+        margin-top: 30px;
+      }
+      .btn-load {
+        background: #f1f5f9;
+        color: var(--primary);
+        border: 1px solid var(--border);
+        padding: 10px 25px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
 
-        /* NEWS HIGHLIGHT STYLING */
-        .news-highlight { margin-top: 40px; }
-        .news-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-        .news-scroll::-webkit-scrollbar { display: none; }
-        .news-card { 
-            min-width: 280px; max-width: 280px; background: white; border-radius: 20px; 
-            border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: 0.3s;
-        }
-        .news-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .news-card img { width: 100%; height: 140px; object-fit: cover; }
-        .news-info { padding: 15px; }
-        .news-tag { font-size: 0.65rem; font-weight: 800; color: var(--primary); text-transform: uppercase; }
-        .news-title { font-size: 1rem; font-weight: 700; margin: 5px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .detail-container { line-height: 1.8; }
-        .detail-container img { width: 100%; border-radius: 24px; margin: 20px 0; max-height: 400px; object-fit: cover; }
+      /* FORUM STYLING */
+      .post-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        padding: 20px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+      }
+      .user-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: var(--primary);
+      }
+      .reply-thread {
+        margin-left: 40px;
+        border-left: 2px solid var(--border);
+        padding-left: 15px;
+        margin-top: 15px;
+      }
+      .reply-item {
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        padding: 5px 0;
+      }
 
-        /* FORUM STYLING */
-        .post-card { background: var(--white); border: 1px solid var(--border); padding: 20px; border-radius: 20px; margin-bottom: 20px; }
-        .user-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743); }
-        .badge { background: var(--verify); color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
-        .reply-thread { margin-left: 40px; border-left: 2px solid var(--border); padding-left: 15px; margin-top: 15px; }
-        .reply-item { margin-bottom: 10px; font-size: 0.9rem; padding: 5px 0; }
+      /* MODAL */
+      #modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal {
+        background: white;
+        padding: 25px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 400px;
+      }
 
-        /* MODAL */
-        #modal-overlay { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
-        .modal { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; }
-
-        /* QUEST LIST */
-        .q-box { background: var(--white); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; }
-        .q-row { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .q-row:hover { background: #f9fafb; }
-        .q-row input { width: 20px; height: 20px; accent-color: var(--primary); }
+      /* QUEST LIST */
+      .q-box {
+        background: var(--white);
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .q-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+      }
+      .q-row:hover {
+        background: #f9fafb;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div id="modal-overlay">
-        <div class="modal">
-            <h3 id="txt-modal-title">Balas Diskusi</h3>
-            <textarea id="reply-input" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); margin:15px 0; outline:none; resize:none;" rows="3" placeholder="Tulis jawaban..."></textarea>
-            <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button class="btn" style="background:#f1f5f9" onclick="closeModal()">Batal</button>
-                <button class="btn btn-p" id="txt-btn-send" onclick="sendReply()">Kirim</button>
-            </div>
+      <div class="modal">
+        <h3 id="txt-modal-title">Balas Diskusi</h3>
+        <textarea
+          id="reply-input"
+          style="
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin: 15px 0;
+            outline: none;
+            resize: none;
+          "
+          rows="3"
+          placeholder="Tulis jawaban..."
+        ></textarea>
+        <div style="display: flex; gap: 10px; justify-content: flex-end">
+          <button
+            class="btn"
+            style="background: #f1f5f9"
+            onclick="closeModal()"
+          >
+            Batal
+          </button>
+          <button class="btn btn-p" id="txt-btn-send" onclick="sendReply()">
+            Kirim
+          </button>
         </div>
+      </div>
     </div>
 
-    <header id="navbar" style="display: none;">
-        <div class="logo" onclick="navigateTo('dashboard')">AMANAH.</div>
-        <div class="nav-tools">
-            <input type="text" class="search-input" id="search-box" placeholder="Cari misi..." onkeyup="filterMisi()">
-            <button class="btn btn-lang" id="lang-btn" onclick="toggleLanguage()">🌐 ID</button>
-            <button class="btn btn-p" style="background:#ef4444" onclick="location.reload()">Logout</button>
-        </div>
+    <header id="navbar" style="display: none">
+      <div class="logo" onclick="navigateTo('dashboard')">AMANAH.</div>
+      <div class="nav-tools">
+        <input
+          type="text"
+          class="search-input"
+          id="search-box"
+          placeholder="Cari misi..."
+          onkeyup="filterMisi()"
+        />
+        <button class="btn btn-lang" id="lang-btn" onclick="toggleLanguage()">
+          🌐 ID
+        </button>
+        <button
+          class="btn btn-p"
+          style="background: #ef4444"
+          onclick="location.reload()"
+        >
+          Logout
+        </button>
+      </div>
     </header>
 
     <div class="container">
-        <section id="page-login" class="page active" style="text-align: center; padding-top: 20vh;">
-            <h1 style="font-size: 3rem; font-weight: 800; color: var(--primary); letter-spacing: -2px;">AMANAH.</h1>
-            <p id="txt-sub">Sistem Integritas & Kabar Muslim Modern</p>
-            <br>
-            <input type="text" id="user-name" placeholder="Nama Anda" style="padding: 15px; width: 100%; max-width: 320px; border-radius: 15px; border: 1px solid var(--border); outline: none;">
-            <br><br>
-            <button class="btn btn-p" id="txt-btn-login" style="padding: 15px 50px;" onclick="login()">Masuk</button>
-        </section>
+      <section
+        id="page-login"
+        class="page active"
+        style="text-align: center; padding-top: 20vh"
+      >
+        <h1
+          style="
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -2px;
+          "
+        >
+          AMANAH.
+        </h1>
+        <p id="txt-sub">Sistem Integritas & Kabar Muslim Modern</p>
+        <br />
+        <input
+          type="text"
+          id="user-name"
+          placeholder="Nama Anda"
+          style="
+            padding: 15px;
+            width: 100%;
+            max-width: 320px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            outline: none;
+          "
+        />
+        <br /><br />
+        <button
+          class="btn btn-p"
+          id="txt-btn-login"
+          style="padding: 15px 50px"
+          onclick="login()"
+        >
+          Masuk
+        </button>
+      </section>
 
-        <section id="page-dashboard" class="page">
-            <h2 id="txt-hi" style="font-size: 1.8rem; margin-bottom: 25px;">Selamat Datang</h2>
-            <div class="grid">
-                <div class="m-card" onclick="navigateTo('misi-list')">
-                    <h3 id="txt-m1">🛡️ Vault 8 Pilar</h3>
-                    <p style="color: var(--sub); font-size: 0.8rem; margin-top:5px;">Checklist 64 poin integritas harian.</p>
-                </div>
-                <div class="m-card" onclick="navigateTo('forum')">
-                    <h3 id="txt-m2">💬 Forum Mentor</h3>
-                    <p style="color: var(--sub); font-size: 0.8rem; margin-top:5px;">Tanya jawab ustadz & diskusi.</p>
-                </div>
-                <div class="m-card" onclick="navigateTo('score')">
-                    <h3 id="txt-m3">📊 Raport Integritas</h3>
-                    <p style="color: var(--sub); font-size: 0.8rem; margin-top:5px;">Lihat Grade A-D Anda.</p>
-                </div>
-            </div>
+      <section id="page-dashboard" class="page">
+        <h2 id="txt-hi" style="font-size: 1.8rem; margin-bottom: 25px">
+          Selamat Datang
+        </h2>
+        <div class="grid">
+          <div class="m-card" onclick="navigateTo('misi-list')">
+            <h3 id="txt-m1">🛡️ Vault 8 Pilar</h3>
+            <p style="color: var(--sub); font-size: 0.8rem; margin-top: 5px">
+              Checklist 64 poin integritas harian.
+            </p>
+          </div>
+          <div class="m-card" onclick="navigateTo('forum')">
+            <h3 id="txt-m2">💬 Forum Mentor</h3>
+            <p style="color: var(--sub); font-size: 0.8rem; margin-top: 5px">
+              Tanya jawab ustadz & diskusi.
+            </p>
+          </div>
+          <div class="m-card" onclick="navigateTo('score')">
+            <h3 id="txt-m3">📊 Raport Integritas</h3>
+            <p style="color: var(--sub); font-size: 0.8rem; margin-top: 5px">
+              Lihat Grade A-D Anda.
+            </p>
+          </div>
+        </div>
 
-            <div class="news-highlight">
-                <h3 id="txt-news-head" style="margin-bottom: 10px;">Kabar Muslim Terkini</h3>
-                <div class="news-scroll" id="news-feed-dashboard"></div>
-            </div>
-        </section>
+        <div class="news-highlight">
+          <h3 id="txt-news-head">Kabar Muslim Terkini</h3>
+          <div class="news-grid" id="news-feed-dashboard"></div>
+          <div class="load-more-container">
+            <button
+              id="btn-load-more"
+              class="btn-load"
+              onclick="loadMoreNews()"
+            >
+              Munculkan Berita Lainnya
+            </button>
+          </div>
+        </div>
+      </section>
 
-        <section id="page-news-detail" class="page">
-            <button class="btn btn-lang" onclick="handleBack()">← Kembali</button>
-            <div id="news-content-area" class="detail-container"></div>
-        </section>
+      <section id="page-news-detail" class="page">
+        <button class="btn btn-lang" onclick="handleBack()">← Kembali</button>
+        <div id="news-content-area" style="margin-top: 20px"></div>
+      </section>
 
-        <section id="page-misi-list" class="page">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 id="txt-misi-head">8 Pilar Utama</h2>
-                <button class="btn btn-lang" onclick="handleBack()">← Kembali</button>
-            </div>
-            <div class="grid" id="misi-grid-container"></div>
-        </section>
+      <section id="page-misi-list" class="page">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <h2 id="txt-misi-head">8 Pilar Utama</h2>
+          <button class="btn btn-lang" onclick="handleBack()">← Kembali</button>
+        </div>
+        <div class="grid" id="misi-grid-container"></div>
+      </section>
 
-        <section id="page-quest" class="page">
-            <button class="btn btn-lang" onclick="handleBack()">← Kembali</button>
-            <h2 id="active-misi-title" style="margin: 20px 0;">Detail Misi</h2>
-            <div class="q-box" id="quest-container"></div>
-            <button class="btn btn-p" id="txt-btn-save" style="width:100%; margin-top:20px; padding:18px;" onclick="saveQuest()">Simpan Progress</button>
-        </section>
+      <section id="page-quest" class="page">
+        <button class="btn btn-lang" onclick="handleBack()">← Kembali</button>
+        <h2 id="active-misi-title" style="margin: 20px 0">Detail Misi</h2>
+        <div class="q-box" id="quest-container"></div>
+        <button
+          class="btn btn-p"
+          id="txt-btn-save"
+          style="width: 100%; margin-top: 20px; padding: 18px"
+          onclick="saveQuest()"
+        >
+          Simpan Progress
+        </button>
+      </section>
 
-        <section id="page-forum" class="page">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h2 id="txt-f-title">Forum Diskusi</h2>
-                <button class="btn btn-lang" onclick="handleBack()">← Kembali</button>
-            </div>
-            <div style="background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 30px;">
-                <textarea id="post-input" placeholder="Tulis pertanyaanmu..." style="width:100%; border:none; outline:none; font-size:1rem;"></textarea>
-                <button class="btn btn-p" style="float:right;" onclick="addPost()">Posting</button>
-                <div style="clear:both;"></div>
-            </div>
-            <div id="forum-feed">
-                <div class="post-card">
-                    <div class="user-row"><div class="avatar" style="background:#ccc"></div><div><strong>Budi_Santoso</strong><br><small>2 jam lalu</small></div></div>
-                    <p>Bolehkah memakai alat kantor untuk dagangan pribadi?</p>
-                    <div style="margin-top:10px;"><span style="color:var(--primary); font-weight:700; cursor:pointer;" onclick="openReplyModal(this)">💬 Balas Jawaban</span></div>
-                    <div class="reply-thread">
-                        <div class="reply-item"><strong>Ust. Hanafi <span class="badge">MENTOR</span></strong><br>Harus ada izin, jika tidak maka dilarang.</div>
-                    </div>
-                </div>
-            </div>
-        </section>
+      <section id="page-forum" class="page">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+          "
+        >
+          <h2 id="txt-f-title">Forum Diskusi</h2>
+          <button class="btn btn-lang" onclick="handleBack()">← Kembali</button>
+        </div>
+        <div
+          style="
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+          "
+        >
+          <textarea
+            id="post-input"
+            placeholder="Tulis pertanyaanmu..."
+            style="width: 100%; border: none; outline: none; font-size: 1rem"
+          ></textarea>
+          <button class="btn btn-p" style="float: right" onclick="addPost()">
+            Posting
+          </button>
+          <div style="clear: both"></div>
+        </div>
+        <div id="forum-feed"></div>
+      </section>
 
-        <section id="page-score" class="page" style="text-align: center;">
-            <div class="m-card" style="max-width: 400px; margin: 0 auto; padding: 50px;">
-                <h2 id="txt-grade-title">Grade Anda</h2>
-                <div id="final-grade" style="font-size: 6rem; font-weight: 800; color: var(--primary);">-</div>
-                <h3 id="final-percent">0%</h3>
-                <button class="btn btn-p" style="margin-top:20px;" onclick="handleBack()">Kembali</button>
-            </div>
-        </section>
+      <section id="page-score" class="page" style="text-align: center">
+        <div
+          class="m-card"
+          style="max-width: 400px; margin: 0 auto; padding: 50px"
+        >
+          <h2 id="txt-grade-title">Grade Anda</h2>
+          <div
+            id="final-grade"
+            style="font-size: 6rem; font-weight: 800; color: var(--primary)"
+          >
+            -
+          </div>
+          <h3 id="final-percent">0%</h3>
+          <button
+            class="btn btn-p"
+            style="margin-top: 20px"
+            onclick="handleBack()"
+          >
+            Kembali
+          </button>
+        </div>
+      </section>
     </div>
 
     <script>
-        const localNews = [
-            { id: 1, title: "Kemenangan Diplomatik di Sidang PBB", category: "Kabar Gembira", summary: "Dukungan negara dunia meningkat tajam.", content: "Laporan dari markas besar menunjukkan bahwa konsensus internasional mulai berpihak pada keadilan di wilayah muslim yang berkonflik. Langkah ini diharapkan menjadi awal perdamaian abadi.", image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800" },
-            { id: 2, title: "Update Situasi Wilayah Gaza", category: "Perang", summary: "Kondisi kemanusiaan terkini dari garis depan.", content: "Saudara-saudara kita di garis depan membutuhkan doa dan dukungan logistik yang lebih masif. Meskipun berat, semangat juang mereka tetap membara menjaga tanah wakaf.", image: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800" },
-            { id: 3, title: "Ramadhan 2026 Segera Tiba", category: "Bulan Spesial", summary: "Mari persiapkan bekal amal terbaik kita.", content: "Kurang dari beberapa bulan lagi kita akan memasuki bulan suci. Penting untuk melatih fisik dan integritas sebelum bulan tarbiyah itu tiba.", image: "https://images.unsplash.com/photo-1564121211835-e88c852648a2?w=800" }
-        ];
+      // API URL diarahkan ke localhost (Uvicorn yang sedang jalan di laptopmu)
+      const API_URL = "https://amalan-app.onrender.com";
 
-        const mDb = [
-            { id: 1, title: 'Kejujuran Lisan', icon: '⚖️', q: ['Tidak bohong', 'Akui salah', 'No Hoax', 'Sesuai fakta', 'Jujur niat', 'Tak melebihkan', 'Bicara benar', 'Berani jujur'] },
-            { id: 2, title: 'Amanah Harta', icon: '💰', q: ['No suap', 'Zakat rutin', 'Timbangan pas', 'Cacat barang disebut', 'No korupsi waktu', 'Gaji halal', 'Sedekah', 'Catat hutang'] },
-            { id: 3, title: 'Janji & Komitmen', icon: '🤝', q: ['Tepat waktu', 'No ingkar', 'Deadline aman', 'Hutang lunas', 'Akad jelas', 'Rahasia aman', 'Konsisten', 'Tanggung jawab'] },
-            { id: 4, title: 'Adab Digital', icon: '📱', q: ['No bully', 'Komen sopan', 'Filter konten', 'No ghibah', 'Izin tag', 'Jaga privasi', 'Share manfaat', 'Bijak sosmed'] },
-            { id: 5, title: 'Rendah Hati', icon: '🍃', q: ['Dengar kritik', 'No pamer', 'Maaf duluan', 'Hargai junior', 'No haus pujian', 'Sabar', 'Sapa duluan', 'Ikhlas'] },
-            { id: 6, title: 'Keadilan', icon: '⚖️', q: ['No pilih kasih', 'Objektif', 'Bela kebenaran', 'Sesuai porsi', 'No fitnah', 'Tegas', 'Adil ke anak', 'No dendam'] },
-            { id: 7, title: 'Disiplin Kerja', icon: '💼', q: ['Datang awal', 'Fokus', 'Selesai tugas', 'No ngeluh', 'Bantu rekan', 'Jaga fasilitas', 'Inovatif', 'Patuh aturan'] },
-            { id: 8, title: 'Sosial & Tetangga', icon: '🏠', q: ['Saling bantu', 'No ganggu', 'Bagi makanan', 'Jenguk sakit', 'Jaga lisan', 'Sopan', 'Ramah', 'Sabar antri'] }
-        ];
+      let allNews = [];
+      let visibleCount = 6;
+      let user = "";
+      let currentLang = "ID";
+      let progress = {};
+      let activeId = null;
 
-        let user = ""; let currentLang = 'ID'; let progress = {}; let activeId = null; let targetReply = null;
+      const mDb = [
+        {
+          id: 1,
+          title: "Kejujuran Lisan",
+          icon: "⚖️",
+          q: [
+            "Tidak bohong",
+            "Akui salah",
+            "No Hoax",
+            "Sesuai fakta",
+            "Jujur niat",
+            "Tak melebihkan",
+            "Bicara benar",
+            "Berani jujur",
+          ],
+        },
+        {
+          id: 2,
+          title: "Amanah Harta",
+          icon: "💰",
+          q: [
+            "No suap",
+            "Zakat rutin",
+            "Timbangan pas",
+            "Cacat barang disebut",
+            "No korupsi waktu",
+            "Gaji halal",
+            "Sedekah",
+            "Catat hutang",
+          ],
+        },
+        {
+          id: 3,
+          title: "Janji & Komitmen",
+          icon: "🤝",
+          q: [
+            "Tepat waktu",
+            "No ingkar",
+            "Deadline aman",
+            "Hutang lunas",
+            "Akad jelas",
+            "Rahasia aman",
+            "Konsisten",
+            "Tanggung jawab",
+          ],
+        },
+        {
+          id: 4,
+          title: "Adab Digital",
+          icon: "📱",
+          q: [
+            "No bully",
+            "Komen sopan",
+            "Filter konten",
+            "No ghibah",
+            "Izin tag",
+            "Jaga privasi",
+            "Share manfaat",
+            "Bijak sosmed",
+          ],
+        },
+      ];
 
-        const lang = {
-            ID: { sub: "Sistem Integritas & Kabar Muslim Modern", btnLogin: "Masuk", hi: "Selamat Datang", m1: "🛡️ Vault 8 Pilar", m2: "💬 Forum Mentor", m3: "📊 Raport Integritas", newsHead: "Kabar Muslim Terkini", misiHead: "8 Pilar Utama", btnSave: "Simpan Progress", fTitle: "Forum Diskusi", modalTitle: "Balas Diskusi", btnSend: "Kirim", gradeTitle: "Grade Anda" },
-            EN: { sub: "Modern Digital Integrity & News System", btnLogin: "Login", hi: "Welcome", m1: "🛡️ 8 Pillar Vault", m2: "💬 Expert Forum", m3: "📊 Integrity Report", newsHead: "Latest Muslim News", misiHead: "8 Main Pillars", btnSave: "Save Progress", fTitle: "Discussion Forum", modalTitle: "Reply Discussion", btnSend: "Send", gradeTitle: "Your Grade" }
-        };
+      const lang = {
+        ID: {
+          sub: "Sistem Integritas & Kabar Muslim Modern",
+          btnLogin: "Masuk",
+          hi: "Selamat Datang",
+          m1: "🛡️ Vault 8 Pilar",
+          m2: "💬 Forum Mentor",
+          m3: "📊 Raport Integritas",
+          newsHead: "Kabar Muslim Terkini",
+          misiHead: "8 Pilar Utama",
+          btnSave: "Simpan Progress",
+          fTitle: "Forum Diskusi",
+          btnSend: "Kirim",
+          gradeTitle: "Grade Anda",
+        },
+        EN: {
+          sub: "Modern Digital Integrity & News System",
+          btnLogin: "Login",
+          hi: "Welcome",
+          m1: "🛡️ 8 Pillar Vault",
+          m2: "💬 Expert Forum",
+          m3: "📊 Integrity Report",
+          newsHead: "Latest Muslim News",
+          misiHead: "8 Main Pillars",
+          btnSave: "Save Progress",
+          fTitle: "Discussion Forum",
+          btnSend: "Send",
+          gradeTitle: "Your Grade",
+        },
+      };
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'ID' ? 'EN' : 'ID';
-            document.getElementById('lang-btn').innerText = "🌐 " + currentLang;
-            updateUI();
+      function login() {
+        user = document.getElementById("user-name").value;
+        if (!user) return alert("Masukkan nama!");
+        document.getElementById("navbar").style.display = "flex";
+        updateUI();
+        navigateTo("dashboard");
+      }
+
+      function navigateTo(p) {
+        window.history.pushState({ page: p }, "", "#" + p);
+        show(p);
+      }
+      function show(p) {
+        document
+          .querySelectorAll(".page")
+          .forEach((pg) => pg.classList.remove("active"));
+        document.getElementById("page-" + p).classList.add("active");
+        if (p === "dashboard") fetchNews();
+        if (p === "misi-list") renderMisi();
+        if (p === "score") calcScore();
+        window.scrollTo(0, 0);
+      }
+
+      // LOGIKA BERITA (API CONNECTION)
+      async function fetchNews() {
+        try {
+          const res = await fetch(`${API_URL}/news`);
+          allNews = await res.json();
+          renderNews();
+        } catch (e) {
+          document.getElementById("news-feed-dashboard").innerHTML =
+            "Gagal konek ke API Lokal. Pastikan Uvicorn menyala!";
         }
+      }
 
-        function updateUI() {
-            const t = lang[currentLang];
-            document.getElementById('txt-sub').innerText = t.sub;
-            document.getElementById('txt-btn-login').innerText = t.btnLogin;
-            document.getElementById('txt-hi').innerText = t.hi + (user ? ", " + user : "");
-            document.getElementById('txt-m1').innerText = t.m1;
-            document.getElementById('txt-m2').innerText = t.m2;
-            document.getElementById('txt-m3').innerText = t.m3;
-            document.getElementById('txt-news-head').innerText = t.newsHead;
-            document.getElementById('txt-misi-head').innerText = t.misiHead;
-            document.getElementById('txt-btn-save').innerText = t.btnSave;
-            document.getElementById('txt-f-title').innerText = t.fTitle;
-            document.getElementById('txt-modal-title').innerText = t.modalTitle;
-            document.getElementById('txt-btn-send').innerText = t.btnSend;
-            document.getElementById('txt-grade-title').innerText = t.gradeTitle;
-        }
-
-        function login() {
-            user = document.getElementById('user-name').value;
-            if(!user) return;
-            document.getElementById('navbar').style.display = 'flex';
-            updateUI();
-            navigateTo('dashboard');
-        }
-
-        function navigateTo(p) { window.history.pushState({page: p}, "", "#"+p); show(p); }
-        function show(p) {
-            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
-            document.getElementById('page-'+p).classList.add('active');
-            if(p === 'dashboard') renderNewsHighlight();
-            if(p === 'misi-list') renderMisi();
-            if(p === 'score') calcScore();
-            window.scrollTo(0,0);
-        }
-        window.onpopstate = (e) => { if(e.state) show(e.state.page); };
-        function handleBack() { window.history.back(); }
-
-        function renderNewsHighlight() {
-            const container = document.getElementById('news-feed-dashboard');
-            container.innerHTML = localNews.map(n => `
-                <div class="news-card" onclick="openNews(${n.id})">
+      function renderNews() {
+        const container = document.getElementById("news-feed-dashboard");
+        const currentItems = allNews.slice(0, visibleCount);
+        container.innerHTML = currentItems
+          .map(
+            (n) => `
+                <div class="news-card" onclick="openNewsDetail(${n.id})">
                     <img src="${n.image}">
                     <div class="news-info">
                         <span class="news-tag">${n.category}</span>
                         <div class="news-title">${n.title}</div>
                         <p style="font-size:0.75rem; color:var(--sub)">${n.summary}</p>
                     </div>
-                </div>`).join('');
-        }
+                </div>
+            `
+          )
+          .join("");
+        if (visibleCount >= allNews.length)
+          document.getElementById("btn-load-more").style.display = "none";
+      }
 
-        function openNews(id) {
-            const item = localNews.find(x => x.id === id);
-            document.getElementById('news-content-area').innerHTML = `
-                <span class="news-tag" style="margin-top:20px; display:block">${item.category}</span>
-                <h1 style="font-size:2rem; margin-top:10px;">${item.title}</h1>
-                <img src="${item.image}">
-                <p style="font-size:1.1rem; color:#444;">${item.content}</p>
-                <div style="height:100px"></div>
-            `;
-            navigateTo('news-detail');
-        }
+      function loadMoreNews() {
+        visibleCount += 3;
+        renderNews();
+      }
 
-        function renderMisi() {
-            const container = document.getElementById('misi-grid-container');
-            container.innerHTML = mDb.map(m => {
-                const done = progress[m.id] ? `(${progress[m.id]}/8)` : '';
-                return `<div class="m-card" onclick="openQuest(${m.id})"><h3>${m.icon} ${m.title}</h3><p>${done} Selesai</p></div>`;
-            }).join('');
-        }
+      function openNewsDetail(id) {
+        const n = allNews.find((x) => x.id === id);
+        document.getElementById("news-content-area").innerHTML = `
+        <img src="${n.image}" style="width:100%; border-radius:20px;">
+        <h1 style="margin:20px 0;">${n.title}</h1>
+        <p style="line-height:1.8;">${n.content}</p>
+        <br>
+        <a href="${n.link}" target="_blank" class="btn btn-p" style="text-decoration:none">Baca Selengkapnya di Sumber Asli</a>
+    `;
+        navigateTo("news-detail");
+      }
 
-        function filterMisi() {
-            const val = document.getElementById('search-box').value.toLowerCase();
-            document.querySelectorAll('#misi-grid-container .m-card').forEach(card => {
-                card.style.display = card.innerText.toLowerCase().includes(val) ? 'block' : 'none';
-            });
-        }
+      // FUNGSI PENDUKUNG LAINNYA (TETAP ADA)
+      function renderMisi() {
+        const container = document.getElementById("misi-grid-container");
+        container.innerHTML = mDb
+          .map(
+            (m) =>
+              `<div class="m-card" onclick="openQuest(${m.id})"><h3>${m.icon} ${
+                m.title
+              }</h3><p>${progress[m.id] || 0}/8 Selesai</p></div>`
+          )
+          .join("");
+      }
 
-        function openQuest(id) {
-            activeId = id;
-            const m = mDb.find(x => x.id === id);
-            document.getElementById('active-misi-title').innerText = m.title;
-            const c = document.getElementById('quest-container');
-            c.innerHTML = m.q.map(q => `
-                <div class="q-row" onclick="this.querySelector('input').click()">
-                    <input type="checkbox" class="q-chk"> <span>${q}</span>
-                </div>`).join('');
-            navigateTo('quest');
-        }
+      function openQuest(id) {
+        activeId = id;
+        const m = mDb.find((x) => x.id === id);
+        document.getElementById("active-misi-title").innerText = m.title;
+        document.getElementById("quest-container").innerHTML = m.q
+          .map(
+            (q) =>
+              `<div class="q-row" onclick="this.querySelector('input').click()"><input type="checkbox" class="q-chk"> <span>${q}</span></div>`
+          )
+          .join("");
+        navigateTo("quest");
+      }
 
-        function saveQuest() {
-            progress[activeId] = document.querySelectorAll('.q-chk:checked').length;
-            alert("Berhasil disimpan!");
-            handleBack();
-        }
+      function saveQuest() {
+        progress[activeId] = document.querySelectorAll(".q-chk:checked").length;
+        alert("Progres disimpan!");
+        handleBack();
+      }
 
-        function calcScore() {
-            let total = 0; Object.values(progress).forEach(v => total += v);
-            const percent = Math.round((total / 64) * 100);
-            document.getElementById('final-percent').innerText = percent + "%";
-            const g = document.getElementById('final-grade');
-            if(percent >= 90) g.innerText = "A";
-            else if(percent >= 70) g.innerText = "B";
-            else if(percent >= 40) g.innerText = "C";
-            else g.innerText = "D";
-        }
+      function calcScore() {
+        let total = 0;
+        Object.values(progress).forEach((v) => (total += v));
+        const percent = Math.round((total / 32) * 100);
+        document.getElementById("final-percent").innerText = percent + "%";
+        const g = document.getElementById("final-grade");
+        g.innerText =
+          percent >= 90 ? "A" : percent >= 70 ? "B" : percent >= 40 ? "C" : "D";
+      }
 
-        function openReplyModal(el) {
-            targetReply = el.closest('.post-card').querySelector('.reply-thread');
-            document.getElementById('modal-overlay').style.display = "flex";
-        }
-        function closeModal() { document.getElementById('modal-overlay').style.display = "none"; document.getElementById('reply-input').value = ""; }
-        function sendReply() {
-            const v = document.getElementById('reply-input').value; if(!v) return;
-            targetReply.innerHTML += `<div class="reply-item"><strong>${user}</strong>: ${v}</div>`;
-            closeModal();
-        }
-        function addPost() {
-            const v = document.getElementById('post-input').value; if(!v) return;
-            const post = `<div class="post-card">
-                <div class="user-row"><div class="avatar" style="background:var(--primary)"></div><div><strong>${user}</strong><br><small>Baru saja</small></div></div>
-                <p>${v}</p>
-                <div style="margin-top:10px;"><span style="color:var(--primary); font-weight:700; cursor:pointer;" onclick="openReplyModal(this)">💬 Balas Jawaban</span></div>
-                <div class="reply-thread"></div>
-            </div>`;
-            document.getElementById('forum-feed').insertAdjacentHTML('afterbegin', post);
-            document.getElementById('post-input').value = "";
-        }
+      function toggleLanguage() {
+        currentLang = currentLang === "ID" ? "EN" : "ID";
+        document.getElementById("lang-btn").innerText = "🌐 " + currentLang;
+        updateUI();
+      }
+
+      function updateUI() {
+        const t = lang[currentLang];
+        document.getElementById("txt-sub").innerText = t.sub;
+        document.getElementById("txt-btn-login").innerText = t.btnLogin;
+        document.getElementById("txt-hi").innerText =
+          t.hi + (user ? ", " + user : "");
+        document.getElementById("txt-news-head").innerText = t.newsHead;
+        document.getElementById("txt-misi-head").innerText = t.misiHead;
+        document.getElementById("txt-btn-save").innerText = t.btnSave;
+        document.getElementById("txt-grade-title").innerText = t.gradeTitle;
+      }
+
+      window.onpopstate = (e) => {
+        if (e.state) show(e.state.page);
+      };
+      function handleBack() {
+        window.history.back();
+      }
     </script>
-</body>
+  </body>
 </html>
