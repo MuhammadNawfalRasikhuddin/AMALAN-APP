@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import feedparser # Library untuk ambil berita real-time
+import feedparser
 
 app = FastAPI()
 
@@ -11,35 +11,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def home():
-    return {"status": "API Amanah Real-Time Active"}
-
 @app.get("/news")
 def get_real_news():
-    # Mengambil RSS Feed berita Muslim (Contoh: Republika Khazanah)
-    url = "https://www.republika.co.id/rss/khazanah/"
-    feed = feedparser.parse(url)
+    # Daftar berbagai sumber berita Muslim agar jumlahnya banyak
+    sources = [
+        "https://www.republika.co.id/rss/khazanah/",
+        "https://www.republika.co.id/rss/dunia-islam/",
+        "https://www.antaranews.com/rss/lifestyle/haji-umroh",
+        "https://www.tempo.co/rss/dunia"
+    ]
     
-    real_news = []
-    for i, entry in enumerate(feed.entries):
-        # Mengambil link gambar dari entry jika ada, jika tidak pakai placeholder
-        image_url = "https://picsum.photos/800/400" 
-        if 'links' in entry:
-            for link in entry.links:
-                if 'image' in link.get('type', ''):
-                    image_url = link.get('href')
-
-        real_news.append({
-            "id": i + 1,
-            "title": entry.title,
-            "category": "Kabar Muslim",
-            "summary": entry.summary[:100] + "...", # Potong ringkasan agar rapi
-            "content": entry.summary,
-            "image": image_url,
-            "link": entry.link
-        })
+    all_combined_news = []
     
-    return real_news
+    for url in sources:
+        feed = feedparser.parse(url)
+        for entry in feed.entries:
+            # Gunakan gambar placeholder jika RSS tidak menyediakan gambar
+            image_url = "https://picsum.photos/seed/" + entry.title[:5] + "/800/400"
+            
+            all_combined_news.append({
+                "id": len(all_combined_news) + 1,
+                "title": entry.title,
+                "category": "Kabar Muslim",
+                "summary": entry.summary[:100] + "..." if 'summary' in entry else "",
+                "content": entry.summary if 'summary' in entry else entry.title,
+                "image": image_url,
+                "link": entry.link
+            })
 
-# Jalankan: uvicorn main:app --reload
+    # Mengembalikan semua berita yang terkumpul (bisa puluhan hingga ratusan)
+    return all_combined_news
