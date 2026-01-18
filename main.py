@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import feedparser
 
 app = FastAPI()
 
+# Agar bisa diakses oleh aplikasi HTML kamu
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -11,33 +11,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/news")
-def get_real_news():
-    # Daftar berbagai sumber berita Muslim agar jumlahnya banyak
-    sources = [
-        "https://www.republika.co.id/rss/khazanah/",
-        "https://www.republika.co.id/rss/dunia-islam/",
-        "https://www.antaranews.com/rss/lifestyle/haji-umroh",
-        "https://www.tempo.co/rss/dunia"
-    ]
-    
-    all_combined_news = []
-    
-    for url in sources:
-        feed = feedparser.parse(url)
-        for entry in feed.entries:
-            # Gunakan gambar placeholder jika RSS tidak menyediakan gambar
-            image_url = "https://picsum.photos/seed/" + entry.title[:5] + "/800/400"
-            
-            all_combined_news.append({
-                "id": len(all_combined_news) + 1,
-                "title": entry.title,
-                "category": "Kabar Muslim",
-                "summary": entry.summary[:100] + "..." if 'summary' in entry else "",
-                "content": entry.summary if 'summary' in entry else entry.title,
-                "image": image_url,
-                "link": entry.link
-            })
+# Simulasi 100 data berita (Saya buatkan contoh polanya, kamu bisa menggandakannya)
+news_data = []
 
-    # Mengembalikan semua berita yang terkumpul (bisa puluhan hingga ratusan)
-    return all_combined_news
+# Loop untuk membuat 100 data berita dengan topik berbeda
+categories = ["Ekonomi Syariah", "Haji & Umroh", "Dunia Islam", "Gaya Hidup", "Pendidikan"]
+for i in range(1, 101):
+    cat = categories[i % len(categories)]
+    news_data.append({
+        "id": i,
+        "title": f"Berita Muslim Terkini Ke-{i}: Perkembangan Umat di Era Digital",
+        "category": cat,
+        "summary": f"Ini adalah ringkasan berita ke-{i} mengenai perkembangan komunitas muslim global yang semakin adaptif dengan teknologi.",
+        "content": f"Konten lengkap berita ke-{i} membahas secara mendalam bagaimana integrasi nilai-nilai keislaman dalam kehidupan modern saat ini, mencakup aspek sosial dan ekonomi.",
+        "image": f"https://picsum.photos/seed/{i+10}/800/400", # Gambar otomatis unik tiap berita
+        "link": "https://www.republika.co.id/khazanah" # Link menuju web asli
+    })
+
+@app.get("/news")
+def get_all_news():
+    return news_data
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
